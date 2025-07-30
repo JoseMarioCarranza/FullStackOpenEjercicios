@@ -19,6 +19,8 @@ const RateButton = ({
   )
 }
 
+const StatisticsLine = ({ text, value }) => <p>{text}: {value}</p>
+
 const Statistics = ({ good, neutral, bad, totalVotes }) => {
   if (totalVotes === 0) {
     return <p>No feedback given</p>
@@ -27,12 +29,12 @@ const Statistics = ({ good, neutral, bad, totalVotes }) => {
   return (
     <div>
       <h1>statistics</h1>
-      <p>good: {good}</p>
-      <p>neutral: {neutral}</p>
-      <p>bad: {bad}</p>
-      <p>all: {totalVotes}</p>
-      <p>average: {(good - bad) / totalVotes}</p>
-      <p>positive: {(good / totalVotes) * 100} %</p>
+      <StatisticsLine text='good' value={good} />
+      <StatisticsLine text='neutral' value={neutral} />
+      <StatisticsLine text='bad' value={bad} />
+      <StatisticsLine text='all' value={totalVotes} />
+      <StatisticsLine text='average' value={(good - bad) / totalVotes} />
+      <StatisticsLine text='positive' value={(((good / totalVotes) * 100)) + '%'} />
     </div>
   )
 }
