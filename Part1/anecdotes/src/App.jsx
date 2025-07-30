@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
-const Display = ({ anecdotes, selected, votes }) => (
+const Display = ({ tittle, anecdotes, selected, votes }) => (
   <>
+    <h1>{tittle}</h1>
     {anecdotes[selected]}
     < p > has {votes[selected]} votes</p>
   </>
@@ -26,19 +27,45 @@ const RandomButton = ({ setState, array, selected }) => {
   )
 }
 
-const VoteButton = ({ selected, setState, votes }) => {
+const VoteButton = ({
+  selected,
+  setVotes,
+  votes,
+  setMorevotes,
+  moreVotes,
+  setMorePopular
+}) => {
 
   const handleClick = () => {
     console.log('Has votado por ', { selected })
     const copyVotes = [...votes]
     copyVotes[selected] += 1
-    setState(copyVotes)
+    setVotes(copyVotes)
+
+    if (copyVotes[selected] >= moreVotes) {
+      setMorevotes(moreVotes + 1)
+      setMorePopular(selected)
+    }
   }
 
   return (
     <button onClick={handleClick}>
       vote
     </button>
+  )
+}
+
+const MorePopular = ({ anecdotes, morePopular, votes, moreVotes }) => {
+
+  if (moreVotes === 0) return
+
+  return (
+    <Display
+      tittle='Anecdote with most votes'
+      anecdotes={anecdotes}
+      selected={morePopular}
+      votes={votes}
+    />
   )
 }
 
@@ -56,13 +83,27 @@ const App = () => {
 
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState([0, 0, 0, 0, 0, 0, 0, 0])
+  const [moreVotes, setMorevotes] = useState(0)
+  const [morePopular, setMorePopular] = useState(0)
 
   return (
     <div>
-      <Display anecdotes={anecdotes} selected={selected} votes={votes} />
-      <br />
-      <VoteButton selected={selected} setState={setVotes} votes={votes} />
+      <Display
+        tittle='Anecdote of the day'
+        anecdotes={anecdotes}
+        selected={selected}
+        votes={votes}
+      />
+      <VoteButton
+        selected={selected}
+        setVotes={setVotes}
+        votes={votes}
+        setMorevotes={setMorevotes}
+        moreVotes={moreVotes}
+        setMorePopular={setMorePopular}
+      />
       <RandomButton setState={setSelected} array={anecdotes} selected={selected} />
+      <MorePopular anecdotes={anecdotes} morePopular={morePopular} votes={votes} moreVotes={moreVotes} />
     </div>
   )
 }
