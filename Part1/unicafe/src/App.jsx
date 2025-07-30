@@ -19,7 +19,12 @@ const RateButton = ({
   )
 }
 
-const StatisticsLine = ({ text, value }) => <p>{text}: {value}</p>
+const StatisticsLine = ({ text, value }) => (
+  <tr>
+    <td>{text}:</td>
+    <td>{value}</td>
+  </tr >
+)
 
 const Statistics = ({ good, neutral, bad, totalVotes }) => {
   if (totalVotes === 0) {
@@ -27,15 +32,19 @@ const Statistics = ({ good, neutral, bad, totalVotes }) => {
   }
 
   return (
-    <div>
-      <h1>statistics</h1>
-      <StatisticsLine text='good' value={good} />
-      <StatisticsLine text='neutral' value={neutral} />
-      <StatisticsLine text='bad' value={bad} />
-      <StatisticsLine text='all' value={totalVotes} />
-      <StatisticsLine text='average' value={(good - bad) / totalVotes} />
-      <StatisticsLine text='positive' value={(((good / totalVotes) * 100)) + '%'} />
-    </div>
+    <>
+      <h1>Statistics</h1>
+      <table>
+        <tbody>
+          <StatisticsLine text='good' value={good} />
+          <StatisticsLine text='neutral' value={neutral} />
+          <StatisticsLine text='bad' value={bad} />
+          <StatisticsLine text='all' value={totalVotes} />
+          <StatisticsLine text='average' value={(good - bad) / totalVotes} />
+          <StatisticsLine text='positive' value={(((good / totalVotes) * 100)) + '%'} />
+        </tbody>
+      </table>
+    </>
   )
 }
 
@@ -46,7 +55,7 @@ const App = () => {
   const [totalVotes, setTotalVotes] = useState(0)
 
   return (
-    <div>
+    <>
       <h1>give feed back</h1>
       <RateButton
         totalVotes={totalVotes}
@@ -75,7 +84,7 @@ const App = () => {
         bad={bad}
         totalVotes={totalVotes}
       />
-    </div>
+    </>
   )
 }
 
