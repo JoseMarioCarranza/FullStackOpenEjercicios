@@ -19,23 +19,23 @@ const RateButton = ({
   )
 }
 
-const Statistics = ({ good, neutral, bad, totalVotes }) => (
-  <div>
-    <h1>statistics</h1>
-    <p>good: {good}</p>
-    <p>neutral: {neutral}</p>
-    <p>bad: {bad}</p>
-    <p>all: {totalVotes}</p>
-    <p>average: {totalVotes == 0
-      ? 'Waiting for display'
-      : (good - bad) / totalVotes}
-    </p>
-    <p>positive: {totalVotes == 0
-      ? 'Waiting for display' :
-      (good / totalVotes) * 100} %
-    </p>
-  </div>
-)
+const Statistics = ({ good, neutral, bad, totalVotes }) => {
+  if (totalVotes === 0) {
+    return <p>No feedback given</p>
+  }
+
+  return (
+    <div>
+      <h1>statistics</h1>
+      <p>good: {good}</p>
+      <p>neutral: {neutral}</p>
+      <p>bad: {bad}</p>
+      <p>all: {totalVotes}</p>
+      <p>average: {(good - bad) / totalVotes}</p>
+      <p>positive: {(good / totalVotes) * 100} %</p>
+    </div>
+  )
+}
 
 const App = () => {
   const [good, setGood] = useState(0)
