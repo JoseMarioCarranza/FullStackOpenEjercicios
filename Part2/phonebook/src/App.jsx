@@ -1,5 +1,9 @@
 import { useState } from 'react'
 
+import Contact from './Components/Contact/Contact'
+import PersonForm from './Components/PersonForm/PersonForm'
+import Filter from './Components/Filter/Filter'
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -11,26 +15,6 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
 
-  const handleSubmit = event => {
-    event.preventDefault()
-
-    if (persons.find(p => p.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
-      return
-    }
-
-    const personObject = {
-      name: newName,
-      number: newNumber
-    }
-
-    setPersons(persons.concat(personObject))
-    setNewName('')
-    setNewNumber('')
-  }
-
-  const handleNameChange = event => setNewName(event.target.value)
-  const handleNumberChange = event => setNewNumber(event.target.value)
   const handleFilterChange = event => setNewFilter(event.target.value)
 
   const personsToShow = newFilter === ''
@@ -40,19 +24,20 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>Filter shown with <input value={newFilter} onChange={handleFilterChange} /></div>
-      <h2>add a new</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <p>name: <input value={newName} onChange={handleNameChange} /></p>
-          <p>number: <input value={newNumber} onChange={handleNumberChange} /></p>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Filter
+        newFilter={newFilter}
+        handleFilterChange={handleFilterChange}
+      />
+      <PersonForm
+        newName={newName}
+        setNewName={setNewName}
+        newNumber={newNumber}
+        setNewNumber={setNewNumber}
+        persons={persons}
+        setPersons={setPersons}
+      />
       <h2>Numbers</h2>
-      {personsToShow.map(p => <p key={p.name}>{p.name}: {p.number}</p>)}
+      {personsToShow.map(p => <Contact key={p.name} person={p} />)}
     </div>
   )
 }
