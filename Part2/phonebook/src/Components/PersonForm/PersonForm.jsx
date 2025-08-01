@@ -1,5 +1,9 @@
 
-const PersonForm = ({ newName,
+import axios from "axios"
+import { useEffect } from "react"
+
+const PersonForm = ({
+    newName,
     setNewName,
     newNumber,
     setNewNumber,
@@ -16,10 +20,17 @@ const PersonForm = ({ newName,
 
         const personObject = {
             name: newName,
-            number: newNumber
+            number: newNumber,
+            id: String(persons.length + 1)
         }
 
-        setPersons(persons.concat(personObject))
+        axios
+            .post('http://localhost:3002/persons', personObject)
+            .then(response => {
+                setPersons(persons.concat(response.data))
+            })
+
+
         setNewName('')
         setNewNumber('')
     }
