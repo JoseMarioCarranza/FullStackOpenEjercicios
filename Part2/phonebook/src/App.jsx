@@ -44,7 +44,7 @@ const App = () => {
         setPersons={setPersons}
       />
       <h2>Numbers</h2>
-      {personsToShow.map(p => <Contact key={p.name} person={p} />)}
+      {personsToShow.map(p => <Contact key={p.id} person={p} setPersons={setPersons} persons={persons} />)}
     </div>
   )
 }
