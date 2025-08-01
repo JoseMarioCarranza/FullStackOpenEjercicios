@@ -11,9 +11,23 @@ const PersonForm = ({
     const handleSubmit = event => {
         event.preventDefault()
 
-        if (persons.find(p => p.name === newName)) {
-            alert(`${newName} is already added to phonebook`)
+        const existingPerson = persons.find(p => p.name.toLowerCase() === newName.toLowerCase())
+
+        if (existingPerson) {
+            if (!window.confirm(`${newName}is already added to phonebook, replace the old number with a new one?`)) return
+
+            const updateForPerson = { ...existingPerson, number: newNumber }
+
+            personsServices
+                .update(existingPerson.id, updateForPerson)
+                .then(updatedPerson => {
+                    setPersons(persons.map(p => p.id !== updatedPerson.id ? p : updatedPerson))
+                    setNewName('')
+                    setNewNumber('')
+                })
+
             return
+
         }
 
         const personObject = {
