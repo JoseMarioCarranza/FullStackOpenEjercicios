@@ -1,6 +1,4 @@
-
-import axios from "axios"
-import { useEffect } from "react"
+import personsServices from "../../services/persons"
 
 const PersonForm = ({
     newName,
@@ -24,12 +22,11 @@ const PersonForm = ({
             id: String(persons.length + 1)
         }
 
-        axios
-            .post('http://localhost:3002/persons', personObject)
-            .then(response => {
-                setPersons(persons.concat(response.data))
+        personsServices
+            .create(personObject)
+            .then(newPerson => {
+                setPersons(persons.concat(newPerson))
             })
-
 
         setNewName('')
         setNewNumber('')

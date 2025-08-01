@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+
+import personsServices from './services/persons'
 
 import Contact from './Components/Contact/Contact'
 import PersonForm from './Components/PersonForm/PersonForm'
@@ -12,10 +13,10 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
 
   const hook = () => {
-    axios
-      .get('http://localhost:3002/persons')
-      .then(response => {
-        setPersons(response.data)
+    personsServices
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }
 
