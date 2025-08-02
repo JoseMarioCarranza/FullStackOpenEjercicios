@@ -1,6 +1,9 @@
 import personsServices from "../../services/persons"
 
-const Contact = ({ person, setPersons, persons }) => {
+const Contact = ({
+    person,
+    setPersons,
+    persons }) => {
 
     const handleClick = () => {
         if (window.confirm(`Delete ${person.name}?`)) {

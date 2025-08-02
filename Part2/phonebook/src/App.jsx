@@ -5,12 +5,15 @@ import personsServices from './services/persons'
 import Contact from './Components/Contact/Contact'
 import PersonForm from './Components/PersonForm/PersonForm'
 import Filter from './Components/Filter/Filter'
+import Notification from './Components/Notification/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [notificationType, setNotificationType] = useState('')
 
   const hook = () => {
     personsServices
@@ -30,7 +33,8 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+      <Notification message={notificationMessage} notificationType={notificationType} />
       <Filter
         newFilter={newFilter}
         handleFilterChange={handleFilterChange}
@@ -42,9 +46,18 @@ const App = () => {
         setNewNumber={setNewNumber}
         persons={persons}
         setPersons={setPersons}
+        setNotificationMessage={setNotificationMessage}
+        setNotificationType={setNotificationType}
       />
       <h2>Numbers</h2>
-      {personsToShow.map(p => <Contact key={p.id} person={p} setPersons={setPersons} persons={persons} />)}
+      {personsToShow.map(p =>
+        <Contact
+          key={p.id}
+          person={p}
+          setPersons={setPersons}
+          persons={persons}
+        />
+      )}
     </div>
   )
 }

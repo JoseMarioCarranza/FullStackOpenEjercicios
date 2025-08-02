@@ -6,7 +6,9 @@ const PersonForm = ({
     newNumber,
     setNewNumber,
     persons,
-    setPersons }) => {
+    setPersons,
+    setNotificationMessage,
+    setNotificationType }) => {
 
     const handleSubmit = event => {
         event.preventDefault()
@@ -25,6 +27,10 @@ const PersonForm = ({
                     setNewName('')
                     setNewNumber('')
                 })
+                .catch(error => {
+                    setNotificationMessage(`Information of ${newName} has already been removed from server`)
+                    setNotificationType('red')
+                })
 
             return
 
@@ -40,10 +46,16 @@ const PersonForm = ({
             .create(personObject)
             .then(newPerson => {
                 setPersons(persons.concat(newPerson))
-            })
+                setNotificationMessage(`Added ${newName}`)
+                setNotificationType('green')
+                setNewName('')
+                setNewNumber('')
 
-        setNewName('')
-        setNewNumber('')
+                setTimeout(() => {
+                    setNotificationMessage(null)
+                    setNotificationType('')
+                }, 5000)
+            })
     }
 
     const handleNameChange = event => setNewName(event.target.value)
