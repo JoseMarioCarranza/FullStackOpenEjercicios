@@ -8,16 +8,18 @@ function App() {
 
   const [contries, setCountries] = useState([])
   const [search, setSearch] = useState('')
+  const [filteredCountries, setFilteredCountries] = useState([])
 
-  const hook = () => {
+  useEffect(() => {
     countriesServices
       .getAllCountries()
       .then(countriesFromServer => setCountries(countriesFromServer))
-  }
+  }, [])
 
-  useEffect(hook, [])
-
-  const filteredCountries = () => contries.filter(c => c.name.common.toLowerCase().includes(search.toLowerCase()))
+  useEffect(
+    () => {
+      setFilteredCountries(contries.filter(c => c.name.common.toLowerCase().includes(search.toLowerCase())))
+    }, [search])
 
   return (
     <>
@@ -25,7 +27,10 @@ function App() {
       {
         search === ''
           ? <></>
-          : <DisplayResults filteredCountries={filteredCountries} />
+          : <DisplayResults
+            filteredCountries={filteredCountries}
+            setFilteredCountries={setFilteredCountries}
+          />
       }
     </>
   )
