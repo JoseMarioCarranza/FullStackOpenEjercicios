@@ -30,6 +30,14 @@ const PersonForm = ({
                 .catch(error => {
                     setNotificationMessage(`Information of ${newName} has already been removed from server`)
                     setNotificationType('red')
+
+                    setTimeout(() => {
+                        setNotificationMessage(null)
+                        setNotificationType('')
+                        setNewName('')
+                        setNewNumber('')
+                    }, 5000)
+
                 })
 
             return
