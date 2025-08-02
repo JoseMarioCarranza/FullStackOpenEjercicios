@@ -31,6 +31,8 @@ const PersonForm = ({
                     setNotificationMessage(`Information of ${newName} has already been removed from server`)
                     setNotificationType('red')
 
+                    setPersons(persons.filter(p => p.id !== existingPerson.id))
+
                     setTimeout(() => {
                         setNotificationMessage(null)
                         setNotificationType('')
