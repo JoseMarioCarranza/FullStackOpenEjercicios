@@ -1,5 +1,6 @@
 import { useState } from "react"
 import countriesServices from "../../services/countries"
+import Weather from "../Weather/Weather"
 
 const CountryInfo = ({ country }) => {
 
@@ -22,6 +23,7 @@ const CountryInfo = ({ country }) => {
                 {Object.values(countryData.languages).map(l => <li key={l}>{l}</li>)}
             </ul>
             <img src={countryData.flags.svg} alt={`Flag of ${countryData.name.common}`} />
+            <Weather lat={countryData.latlng[0]} lng={countryData.latlng[1]} country={countryData.name.common} />
         </>
     )
 }
