@@ -17,7 +17,7 @@ const DisplayResults = ({ filteredCountries, setFilteredCountries }) => {
             {
                 countriesToShow.length !== 1
                     ? countriesToShow.map(c => <p key={c}>{c} <button onClick={() => handleClick(c)}>Show</button> </p>)
-                    : <CountryInfo country={countriesToShow[0]} />
+                    : <CountryInfo data={filteredCountries} />
             }
         </>
     )
