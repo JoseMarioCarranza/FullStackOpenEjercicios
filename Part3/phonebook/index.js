@@ -24,6 +24,8 @@ let persons = [
     }
 ]
 
+app.use(express.json())
+
 app.get('/info', (req, res) => {
     res.send(`
     <p>Phonebook has info for ${persons.length} people</p>
@@ -33,6 +35,26 @@ app.get('/info', (req, res) => {
 
 app.get('/api/persons', (req, res) => {
     res.json(persons)
+})
+
+app.post('/api/persons', (req, res) => {
+    const body = req.body
+
+    if (!body.name || !body.number) return res.status(400).json({ error: 'Some data is missing' })
+
+    const personExist = persons.find(p => p.name === body.name)
+
+    if (personExist) return res.status(400).json({ error: 'name must be unique' })
+
+    const newPerson = {
+        "id": Math.floor(Math.random() * 999999999),
+        "name": body.name,
+        "number": String(body.number)
+    }
+
+    persons = persons.concat(newPerson)
+
+    res.json(newPerson)
 })
 
 app.get('/api/persons/:id', (req, res) => {
