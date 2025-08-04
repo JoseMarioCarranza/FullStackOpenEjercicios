@@ -3,7 +3,11 @@ const morgan = require('morgan')
 
 const app = express()
 
-app.use(morgan('tiny'))
+morgan.token('body', function getId(req) {
+    return JSON.stringify(req.body)
+})
+
+app.use(morgan(':method :url :status -:response-time ms :body'))
 
 let persons = [
     {
