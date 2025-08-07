@@ -7,6 +7,16 @@ const Person = require('./models/person')
 
 const app = express()
 
+const errorHandler = (error, req, res, next) => {
+    console.log(error.message);
+
+    if (error.name === 'CastError') {
+        return res.status(400).send({ error: 'malformed id' })
+    }
+
+    next(error)
+}
+
 app.use(cors())
 app.use(express.static('dist'))
 
@@ -50,12 +60,15 @@ app.get('/api/persons/:id', (req, res) => {
         .catch(e => res.status(404).end())
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
 
     Person.findByIdAndDelete(id)
         .then(r => res.status(204).end())
+        .catch(e => next(e))
 })
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
