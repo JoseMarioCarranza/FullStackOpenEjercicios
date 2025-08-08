@@ -21,7 +21,7 @@ const errorHandler = (error, req, res, next) => {
 }
 
 app.use(cors())
-app.use(express.static('dist'))
+app.use(express.static('../frontend/dist'))
 
 morgan.token('body', function getId(req) {
     return JSON.stringify(req.body)
