@@ -66,6 +66,15 @@ const PersonForm = ({
                     setNotificationType('')
                 }, 5000)
             })
+            .catch(error => {
+                setNotificationMessage(error.response.data.error)
+                setNotificationType('red')
+
+                setTimeout(() => {
+                    setNotificationMessage(null)
+                    setNotificationType('')
+                }, 5000)
+            })
     }
 
     const handleNameChange = event => setNewName(event.target.value)

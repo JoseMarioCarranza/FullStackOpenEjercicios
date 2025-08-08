@@ -13,6 +13,8 @@ const errorHandler = (error, req, res, next) => {
 
     if (error.name === 'CastError') {
         return res.status(400).send({ error: 'malformed id' })
+    } else if (error.name === 'ValidationError') {
+        return res.status(400).send({ error: error.message })
     }
 
     next(error)
@@ -30,35 +32,44 @@ app.use(morgan(':method :url :status -:response-time ms :body'))
 app.use(express.json())
 
 app.get('/info', (req, res) => {
-    res.send(`
-    <p>Phonebook has info for ${persons.length} people</p>
-    <p>${Date()}<p/>
-    `)
+
+    Person.find({}).then(people => {
+        res.send(`
+        <p>Phonebook has info for ${people.length} people</p>
+        <p>${Date()}<p/>
+        `)
+    })
 })
 
 app.get('/api/persons', (req, res) => {
     Person.find({}).then(people => res.json(people))
 })
 
-app.post('/api/persons', (req, res) => {
-    const body = req.body
-
-    if (!body.name || !body.number) return res.status(400).json({ error: 'Some data is missing' })
+app.post('/api/persons', (req, res, next) => {
+    const { name, number } = req.body
 
     const person = new Person({
-        "name": body.name,
-        "number": String(body.number)
+        "name": name,
+        "number": number
     })
 
-    person.save().then(savePerson => res.json(savePerson))
+    person.save()
+        .then(savePerson => res.json(savePerson))
+        .catch(error => next(error))
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
 
     Person.findById(id)
-        .then(person => res.json(person))
-        .catch(e => res.status(404).end())
+        .then(person => {
+            if (person) {
+                res.json(person)
+            } else {
+                res.status(404).end()
+            }
+        })
+        .catch(e => next(e))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
