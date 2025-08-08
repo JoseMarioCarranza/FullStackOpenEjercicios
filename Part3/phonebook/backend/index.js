@@ -4,7 +4,6 @@ const morgan = require('morgan')
 const cors = require('cors')
 
 const Person = require('./models/person')
-const person = require('./models/person')
 
 const app = express()
 
@@ -90,7 +89,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
 
     Person.findByIdAndDelete(id)
-        .then(r => res.status(204).end())
+        .then(() => res.status(204).end())
         .catch(e => next(e))
 })
 
