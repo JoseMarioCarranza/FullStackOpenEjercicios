@@ -152,3 +152,27 @@ describe('Most Blogs', () => {
         assert.deepStrictEqual(result, posibleResult)
     })
 })
+
+describe('Most likes', () => {
+    test('If you send one it should bring you the name of the author and the number of likes', () => {
+        const result = listHelper.mostLikes(listWithOneBlog)
+
+        const posibleResult = {
+            author: "Edsger W. Dijkstra",
+            likes: 5
+        }
+
+        assert.deepStrictEqual(result, posibleResult)
+    })
+
+    test('If you send an array of blogs it should bring you the most popular author and the number of likes', () => {
+        const result = listHelper.mostLikes(blogs)
+
+        const posibleResult = {
+            author: "Edsger W. Dijkstra",
+            likes: 17
+        }
+
+        assert.deepStrictEqual(posibleResult, result)
+    })
+})

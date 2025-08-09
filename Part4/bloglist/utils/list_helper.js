@@ -45,6 +45,28 @@ const mostBlogs = (blogs) => {
 
 }
 
+const mostLikes = (blogs) => {
+    const listOfAuthors = blogs.reduce((array, blog) => {
+
+        const exist = array.find(b => b.author === blog.author)
+
+        if (!exist) {
+            return array.concat({ author: blog.author, likes: blog.likes })
+        } else {
+            exist.likes += blog.likes
+
+            return array.map(b => b.author !== blog.author
+                ? b
+                : exist
+            )
+        }
+    }, [])
+
+    const result = listOfAuthors.sort((a, b) => b.likes - a.likes)
+
+    return result[0]
+}
+
 const blogs = [
     { title: 'Post A', author: 'Linus', likes: 5 },
     { title: 'Post B', author: 'Edsger W. Dijkstra', likes: 12 },
@@ -53,6 +75,4 @@ const blogs = [
     { title: 'Post E', author: 'Margaret Hamilton', likes: 9 }
 ]
 
-console.log(mostBlogs(blogs));
-
-module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs }
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes }
