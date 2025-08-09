@@ -127,3 +127,28 @@ describe('Favorite blog', () => {
         assert(posibles.some(blog => assert.deepStrictEqual(blog, result) || true))
     })
 })
+
+describe('Most Blogs', () => {
+    test('If you send one it should only return the author and number of blogs', () => {
+
+        const result = listHelper.mostBlogs(listWithOneBlog)
+
+        const posibleResult = {
+            author: listWithOneBlog[0].author,
+            blogs: 1
+        }
+
+        assert.deepStrictEqual(result, posibleResult)
+    })
+
+    test('With a list of blogs it should give you the author with more blogs', () => {
+        const result = listHelper.mostBlogs(blogs)
+
+        const posibleResult = {
+            author: "Robert C. Martin",
+            blogs: 3
+        }
+
+        assert.deepStrictEqual(result, posibleResult)
+    })
+})
