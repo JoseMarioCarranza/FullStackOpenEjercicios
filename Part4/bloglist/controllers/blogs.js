@@ -41,4 +41,24 @@ blogsRoutes.delete('/:id', async (request, response) => {
     response.status(204).end()
 })
 
+blogsRoutes.put('/:id', async (request, response) => {
+
+    const { title, author, url, likes } = request.body
+
+    const updatedBlog = await Blog.findByIdAndUpdate(
+        request.params.id,
+        { title, author, url, likes },
+        { new: true }
+    )
+
+    if (!updatedBlog) {
+        const err = new Error('Id not found')
+        err.status = 400
+        throw err
+    }
+
+    response.status(200).json(updatedBlog)
+
+})
+
 module.exports = blogsRoutes

@@ -4,6 +4,7 @@ const app = require('../app')
 const Blog = require('../models/blog')
 const mongoose = require('mongoose')
 const assert = require('assert')
+const { application } = require('express')
 
 const api = supertest(app)
 
@@ -157,6 +158,20 @@ test('You can delete a blog in the data base', async () => {
     const blogsAtTheEnd = responseAtTheEnd.body.map(blog => blog.id)
 
     assert(!blogsAtTheEnd.includes(blog.id))
+})
+
+test('You can update the number of likes of a blog', async () => {
+    const responseAtInit = await api.get('/api/blogs')
+
+    const blog = responseAtInit.body[0]
+
+    const updatedBlog = await api
+        .put(`/api/blogs/${blog.id}`)
+        .send({ likes: 999 })
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+    assert.strictEqual(updatedBlog.body.likes, 999)
 })
 
 after(async () => {
