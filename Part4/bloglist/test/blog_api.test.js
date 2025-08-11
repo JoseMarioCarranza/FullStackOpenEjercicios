@@ -4,7 +4,6 @@ const app = require('../app')
 const Blog = require('../models/blog')
 const mongoose = require('mongoose')
 const assert = require('assert')
-const { json } = require('express')
 
 const api = supertest(app)
 
@@ -121,6 +120,27 @@ test('If you post a new blog post with no likes defined, it will automatically b
         .expect('Content-Type', /application\/json/)
 
     assert.strictEqual(savedBlog.body.likes, 0)
+})
+
+test('If you send a blog without a title or url it is going to send err 400 bad request', async () => {
+    const newBlogsArray = [{
+        author: "Roman Telefonitos",
+        url: "https://www.romanphones.com/",
+    }, {
+        title: "New Phones",
+        author: "Roman Telefonitos",
+    }]
+
+    await api
+        .post('/api/blogs')
+        .send(newBlogsArray[0])
+        .expect(400)
+
+    await api
+        .post('/api/blogs')
+        .send(newBlogsArray[1])
+        .expect(400)
+
 })
 
 after(async () => {

@@ -10,6 +10,12 @@ blogsRoutes.post('/', async (request, response) => {
 
     const { title, author, url, likes } = request.body
 
+    if (!title || !url) {
+        const err = new Error('some data is missing')
+        err.status = 400
+        throw err
+    }
+
     const blog = new Blog({
         'title': title,
         'author': author,
