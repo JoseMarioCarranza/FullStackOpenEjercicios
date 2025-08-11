@@ -107,6 +107,22 @@ test('You can post a new blog in the db', async () => {
     assert(contents.includes(newBlog.title))
 })
 
+test('If you post a new blog post with no likes defined, it will automatically be set to 0 likes', async () => {
+    const newBlog = {
+        title: "New Phones",
+        author: "Roman Telefonitos",
+        url: "https://www.romanphones.com/",
+    }
+
+    const savedBlog = await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    assert.strictEqual(savedBlog.body.likes, 0)
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
