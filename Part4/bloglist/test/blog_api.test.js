@@ -73,6 +73,16 @@ test('the same number of initial blogs is the same number of blogs in the data b
     assert.strictEqual(intialBlogs.length, response.body.length)
 })
 
+test('The identifier property is id and not id', async () => {
+    const response = await api.get('/api/blogs')
+
+    const blog = response.body[0]
+
+    assert(blog.id)
+
+    assert(!blog._id)
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
