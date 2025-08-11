@@ -4,6 +4,7 @@ const app = require('../app')
 const Blog = require('../models/blog')
 const mongoose = require('mongoose')
 const assert = require('assert')
+const { json } = require('express')
 
 const api = supertest(app)
 
@@ -81,6 +82,29 @@ test('The identifier property is id and not id', async () => {
     assert(blog.id)
 
     assert(!blog._id)
+})
+
+test('You can post a new blog in the db', async () => {
+    const newBlog = {
+        title: "New Phones",
+        author: "Roman Telefonitos",
+        url: "https://www.romanphones.com/",
+        likes: 100
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const blogsInDb = await api.get('/api/blogs')
+
+    const contents = blogsInDb.body.map(blog => blog.title)
+
+    assert.strictEqual(contents.length, intialBlogs.length + 1)
+
+    assert(contents.includes(newBlog.title))
 })
 
 after(async () => {
