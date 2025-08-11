@@ -28,4 +28,17 @@ blogsRoutes.post('/', async (request, response) => {
     response.status(201).json(savedBlog)
 })
 
+blogsRoutes.delete('/:id', async (request, response) => {
+
+    const deletedBlog = await Blog.findByIdAndDelete(request.params.id)
+
+    if (!deletedBlog) {
+        const err = new Error('Id not found')
+        err.status = 400
+        throw err
+    }
+
+    response.status(204).end()
+})
+
 module.exports = blogsRoutes

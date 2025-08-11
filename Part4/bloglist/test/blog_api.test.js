@@ -143,6 +143,22 @@ test('If you send a blog without a title or url it is going to send err 400 bad 
 
 })
 
+test('You can delete a blog in the data base', async () => {
+    const blogsAtBegining = await api.get('/api/blogs')
+
+    const blog = blogsAtBegining.body[0]
+
+    await api
+        .delete(`/api/blogs/${blog.id}`)
+        .expect(204)
+
+    const responseAtTheEnd = await api.get('/api/blogs')
+
+    const blogsAtTheEnd = responseAtTheEnd.body.map(blog => blog.id)
+
+    assert(!blogsAtTheEnd.includes(blog.id))
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
