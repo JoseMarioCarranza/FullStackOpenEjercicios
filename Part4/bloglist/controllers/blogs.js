@@ -1,14 +1,17 @@
 const blogsRoutes = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 blogsRoutes.get('/', async (request, response) => {
-    const blogs = await Blog.find({})
+    const blogs = await Blog.find({}).populate('user')
     response.json(blogs)
 })
 
 blogsRoutes.post('/', async (request, response) => {
 
-    const { title, author, url, likes } = request.body
+    const { title, author, url, likes, userId } = request.body
+
+    const user = await User.findById(userId)
 
     if (!title || !url) {
         const err = new Error('some data is missing')
@@ -20,10 +23,13 @@ blogsRoutes.post('/', async (request, response) => {
         'title': title,
         'author': author,
         'url': url,
-        'likes': likes || 0
+        'likes': likes || 0,
+        'user': user.id
     })
 
     const savedBlog = await blog.save()
+    user.blogs = user.blogs.concat(savedBlog._id)
+    await user.save()
 
     response.status(201).json(savedBlog)
 })
