@@ -11,6 +11,12 @@ userRoutes.post('/', async (req, res) => {
         throw err
     }
 
+    if (!(username.length > 3 && password.length > 3)) {
+        const err = new Error('username or password invalid')
+        err.status = 400
+        throw err
+    }
+
     const passwordHash = await bcrypt.hash(password, 10)
 
     const user = new User({ username, name, passwordHash })

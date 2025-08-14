@@ -1,4 +1,4 @@
-const { test, beforeEach, after } = require('node:test')
+const { test, beforeEach, after, describe } = require('node:test')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
@@ -172,6 +172,35 @@ test('You can update the number of likes of a blog', async () => {
         .expect('Content-Type', /application\/json/)
 
     assert.strictEqual(updatedBlog.body.likes, 999)
+})
+
+test("You can't create an invalid user", async () => {
+
+    const user1 = {
+        "username": "dn",
+        "name": "Enos",
+        "password": "123456"
+    }
+
+    const user2 = {
+        "username": "dnbsdajhna",
+        "name": "Enos",
+        "password": "12"
+    }
+
+    const savedUser1 = await api
+        .post(`/api/users`)
+        .send(user1)
+        .expect(400)
+
+    const savedUser2 = await api
+        .post(`/api/users`)
+        .send(user2)
+        .expect(400)
+
+    assert(!savedUser1.body.id)
+
+    assert(!savedUser2.body.id)
 })
 
 after(async () => {
