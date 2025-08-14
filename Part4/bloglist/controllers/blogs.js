@@ -2,24 +2,24 @@ const blogsRoutes = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const middleware = require('../utils/middleware')
 
 blogsRoutes.get('/', async (request, response) => {
     const blogs = await Blog.find({}).populate('user')
     response.json(blogs)
 })
 
-blogsRoutes.post('/', async (request, response) => {
+blogsRoutes.post('/', middleware.userExtractor, async (request, response) => {
 
     const { title, author, url, likes } = request.body
 
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if (!decodedToken.id) {
+    if (!request.user) {
         const err = new Error('token invalid')
         err.status = 401
         throw err
     }
 
-    const user = await User.findById(decodedToken.id)
+    const user = await User.findById(request.user.id)
 
     if (!title || !url) {
         const err = new Error('some data is missing')
@@ -42,7 +42,7 @@ blogsRoutes.post('/', async (request, response) => {
     response.status(201).json(savedBlog)
 })
 
-blogsRoutes.delete('/:id', async (request, response) => {
+blogsRoutes.delete('/:id', middleware.userExtractor, async (request, response) => {
 
     if (!request.token) {
         const err = new Error('No sing user')
@@ -58,9 +58,7 @@ blogsRoutes.delete('/:id', async (request, response) => {
         throw err
     }
 
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-
-    const userId = decodedToken.id
+    const userId = request.user.id
 
     if (blog.user.toString() === userId.toString()) {
         await Blog.deleteOne(blog)
