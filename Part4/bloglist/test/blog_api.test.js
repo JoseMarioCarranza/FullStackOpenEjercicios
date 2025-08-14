@@ -1,10 +1,9 @@
-const { test, beforeEach, after, describe } = require('node:test')
+const { test, beforeEach, after } = require('node:test')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
 const mongoose = require('mongoose')
 const assert = require('assert')
-const { application } = require('express')
 
 const api = supertest(app)
 
