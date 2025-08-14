@@ -44,11 +44,29 @@ blogsRoutes.post('/', async (request, response) => {
 
 blogsRoutes.delete('/:id', async (request, response) => {
 
-    const deletedBlog = await Blog.findByIdAndDelete(request.params.id)
+    if (!request.token) {
+        const err = new Error('No sing user')
+        err.status = 401
+        throw err
+    }
 
-    if (!deletedBlog) {
-        const err = new Error('Id not found')
-        err.status = 400
+    const blog = await Blog.findById(request.params.id)
+
+    if (!blog) {
+        const err = new Error('Blog no found')
+        err.status = 401
+        throw err
+    }
+
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+    const userId = decodedToken.id
+
+    if (blog.user.toString() === userId.toString()) {
+        await Blog.deleteOne(blog)
+    } else {
+        const err = new Error("This blog doesn't belong to this user")
+        err.status = 401
         throw err
     }
 
