@@ -11,13 +11,13 @@ blogsRoutes.get('/', async (request, response) => {
 
 blogsRoutes.post('/', middleware.userExtractor, async (request, response) => {
 
-    const { title, author, url, likes } = request.body
-
-    if (!request.user) {
-        const err = new Error('token invalid')
+    if (!request.token) {
+        const err = new Error('Unauthorized')
         err.status = 401
         throw err
     }
+
+    const { title, author, url, likes } = request.body
 
     const user = await User.findById(request.user.id)
 

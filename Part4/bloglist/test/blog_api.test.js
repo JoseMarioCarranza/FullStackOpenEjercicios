@@ -2,6 +2,7 @@ const { test, beforeEach, after } = require('node:test')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const mongoose = require('mongoose')
 const assert = require('assert')
 
@@ -58,13 +59,35 @@ const intialBlogs = [
     }
 ]
 
+let authHeader
+
+const createUserAndLogin = async () => {
+    const username = 'user'
+    const name = 'name'
+    const password = 'password'
+
+    await api
+        .post('/api/users')
+        .send({ username, name, password })
+        .expect(201)
+
+    const login = await api
+        .post('/api/login')
+        .send({ username, password })
+        .expect(201)
+
+    authHeader = { Authorization: `Bearer ${login.body.token}` }
+}
+
 beforeEach(async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
 
-    const blogObjects = intialBlogs.map(blog => new Blog(blog))
-    const promiseArray = blogObjects.map(blog => blog.save())
+    await createUserAndLogin()
 
-    await Promise.all(promiseArray)
+    for (const b of intialBlogs) {
+        await api.post('/api/blogs').set(authHeader).send(b).expect(201)
+    }
 })
 
 test('the same number of initial blogs is the same number of blogs in the data base', async () => {
@@ -93,6 +116,7 @@ test('You can post a new blog in the db', async () => {
 
     await api
         .post('/api/blogs')
+        .set(authHeader)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -115,6 +139,7 @@ test('If you post a new blog post with no likes defined, it will automatically b
 
     const savedBlog = await api
         .post('/api/blogs')
+        .set(authHeader)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -133,11 +158,13 @@ test('If you send a blog without a title or url it is going to send err 400 bad 
 
     await api
         .post('/api/blogs')
+        .set(authHeader)
         .send(newBlogsArray[0])
         .expect(400)
 
     await api
         .post('/api/blogs')
+        .set(authHeader)
         .send(newBlogsArray[1])
         .expect(400)
 
@@ -150,6 +177,7 @@ test('You can delete a blog in the data base', async () => {
 
     await api
         .delete(`/api/blogs/${blog.id}`)
+        .set(authHeader)
         .expect(204)
 
     const responseAtTheEnd = await api.get('/api/blogs')
@@ -189,17 +217,34 @@ test("You can't create an invalid user", async () => {
 
     const savedUser1 = await api
         .post(`/api/users`)
+        .set(authHeader)
         .send(user1)
         .expect(400)
 
     const savedUser2 = await api
         .post(`/api/users`)
+        .set(authHeader)
         .send(user2)
         .expect(400)
 
     assert(!savedUser1.body.id)
 
     assert(!savedUser2.body.id)
+})
+
+test("If you want to post a blog without a bearer token it will give you 401", async () => {
+    const newBlog = {
+        title: "New Phones",
+        author: "Roman Telefonitos",
+        url: "https://www.romanphones.com/",
+        likes: 100
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(401)
+        .expect('Content-Type', /application\/json/)
 })
 
 after(async () => {
