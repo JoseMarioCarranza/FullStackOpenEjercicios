@@ -1,7 +1,7 @@
 import { useState } from "react"
 import blogService from "../services/blogs"
 
-const BlogForm = ({ blogs, setBlogs, setNotificationMessage }) => {
+const BlogForm = ({ blogs, setBlogs, setNotificationMessage, toggleVisibility }) => {
 
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
@@ -13,8 +13,9 @@ const BlogForm = ({ blogs, setBlogs, setNotificationMessage }) => {
         const newBlog = await blogService.create({ title, author, url })
 
         if (newBlog) {
-
             setNotificationMessage([`a new blog ${title} by ${author} added`, 'green'])
+
+            toggleVisibility()
 
             setTitle('')
             setAuthor('')

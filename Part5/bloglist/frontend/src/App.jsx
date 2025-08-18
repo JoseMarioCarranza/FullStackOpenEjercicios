@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+
 import Blog from './components/Blog'
 import Log from './components/log'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
+
 import blogService from './services/blogs'
 
 
@@ -10,6 +13,8 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [notificationMessage, setNotificationMessage] = useState(null)
+
+  const blogFormRef = useRef()
 
   const logOut = () => {
     window.localStorage.removeItem('loggedBlogListApp')
@@ -30,6 +35,17 @@ const App = () => {
     }
   }, [])
 
+  const blogForm = () => (
+    <Togglable buttonLabel='New blog' ref={blogFormRef}>
+      <BlogForm
+        blogs={blogs}
+        setBlogs={setBlogs}
+        setNotificationMessage={setNotificationMessage}
+        toggleVisibility={() => blogFormRef.current.toggleVisibility()}
+      />
+    </Togglable>
+  )
+
   return (
     <>
       <Notification notificationMessage={notificationMessage} />
@@ -46,9 +62,7 @@ const App = () => {
               <button onClick={logOut}>Log Out</button>
             </div>
 
-            <br />
-
-            <BlogForm blogs={blogs} setBlogs={setBlogs} setNotificationMessage={setNotificationMessage} />
+            {blogForm()}
 
             <br />
 
