@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
+import Log from './log'
 
-const Blog = ({ blog, blogs, setBlogs }) => {
-
-  console.log(blog);
+const Blog = ({ blog, blogs, setBlogs, user }) => {
 
   const blogStyle = {
     paddingTop: 10,
@@ -29,6 +28,32 @@ const Blog = ({ blog, blogs, setBlogs }) => {
     }
   }
 
+  const remove = async () => {
+    window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+
+    const response = await blogService.remove(blog.id)
+
+    if (response) {
+
+      setBlogs(blogs.filter(b => b.id !== blog.id))
+
+    }
+  }
+
+  const removeButton = () => {
+
+    if (user.username === blog.user.username) {
+      return (
+        <div onClick={remove}>
+          <button>remove</button>
+        </div>
+      )
+    } else {
+      return
+    }
+
+  }
+
   return (
     <div style={blogStyle}>
       <div style={hideWhenVisible}>
@@ -39,6 +64,7 @@ const Blog = ({ blog, blogs, setBlogs }) => {
         <div>{blog.url}</div>
         <div>likes {blog.likes} <button onClick={like}>Like</button></div>
         <div>{blog.user.username}</div>
+        <>{removeButton()}</>
       </div>
     </div>
   )
