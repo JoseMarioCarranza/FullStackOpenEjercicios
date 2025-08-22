@@ -1,6 +1,6 @@
-import { useState } from "react"
-import loginService from "../services/login"
-import blogService from "../services/blogs"
+import { useState } from 'react'
+import loginService from '../services/login'
+import blogService from '../services/blogs'
 
 const Log = ({ setUser, setNotificationMessage }) => {
 
@@ -23,7 +23,7 @@ const Log = ({ setUser, setNotificationMessage }) => {
             setNotificationMessage(null)
 
         } catch (error) {
-            console.log(error);
+            console.log(error)
             setNotificationMessage(['Wrong username or password', 'red'])
 
             setTimeout(() => {
