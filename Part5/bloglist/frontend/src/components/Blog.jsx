@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
-import Log from './log'
 
 const Blog = ({ blog, blogs, setBlogs, user }) => {
 
@@ -55,11 +54,11 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      <div style={hideWhenVisible}>
+    <div style={blogStyle} className='blog'>
+      <div style={hideWhenVisible} className='shortContent'>
         {blog.title} {blog.author} <button onClick={toggleVisibility}>view</button>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className='fullContent'>
         <div> {blog.title} {blog.author}<button onClick={toggleVisibility}>hide</button> </div>
         <div>{blog.url}</div>
         <div>likes {blog.likes} <button onClick={like}>Like</button></div>
