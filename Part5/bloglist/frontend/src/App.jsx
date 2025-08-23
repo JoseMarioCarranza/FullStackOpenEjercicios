@@ -21,6 +21,15 @@ const App = () => {
     setUser(null)
   }
 
+  const like = async (blog) => {
+    blog.likes += 1
+    const response = await blogService.update(blog)
+
+    if (response) {
+      setBlogs(blogs.map(b => b))
+    }
+  }
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
@@ -68,7 +77,14 @@ const App = () => {
 
             {
               blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-                <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} user={user} />
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                  blogs={blogs}
+                  setBlogs={setBlogs}
+                  user={user}
+                  like={like}
+                />
               )
             }
           </div >

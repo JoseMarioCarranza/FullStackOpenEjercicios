@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event'
 describe('<Blog />', () => {
 
     let container
+    let likeCounter = 0
 
     beforeEach(() => {
         const blog = {
@@ -22,7 +23,12 @@ describe('<Blog />', () => {
             username: 'Aperta'
         }
 
-        container = render(<Blog blog={blog} user={user} />).container
+
+        const like = () => {
+            likeCounter += 1
+        }
+
+        container = render(<Blog blog={blog} user={user} like={() => like(blog)} />).container
 
     })
 
@@ -61,5 +67,17 @@ describe('<Blog />', () => {
 
         const fullContent = container.querySelector('.fullContent')
         expect(fullContent).not.toHaveStyle('display: none')
+    })
+
+    test('If you click on the like button two times it is going to show you intial likes + 2', async () => {
+
+        const user = userEvent.setup()
+        const button = screen.getByText('view')
+        const likeButton = screen.getByText('Like')
+        await user.click(button)
+        await user.click(likeButton)
+        await user.click(likeButton)
+
+        expect(likeCounter).toBe(2)
     })
 })
