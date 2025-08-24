@@ -13,21 +13,15 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [notificationMessage, setNotificationMessage] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   const blogFormRef = useRef()
 
   const logOut = () => {
     window.localStorage.removeItem('loggedBlogListApp')
     setUser(null)
-  }
-
-  const like = async (blog) => {
-    blog.likes += 1
-    const response = await blogService.update(blog)
-
-    if (response) {
-      setBlogs(blogs.map(b => b))
-    }
   }
 
   useEffect(() => {
@@ -44,13 +38,46 @@ const App = () => {
     }
   }, [])
 
+  const like = async (blog) => {
+    blog.likes += 1
+    const response = await blogService.update(blog)
+
+    if (response) {
+      setBlogs(blogs.map(b => b))
+    }
+  }
+
+  const createBlog = async event => {
+    event.preventDefault()
+
+    const newBlog = await blogService.create({ title, author, url })
+
+    if (newBlog) {
+      setNotificationMessage([`a new blog ${title} by ${author} added`, 'green'])
+
+      blogFormRef.current.toggleVisibility()
+
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+      setBlogs(blogs.concat(newBlog))
+
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 5000)
+    }
+  }
+
   const blogForm = () => (
     <Togglable buttonLabel='New blog' ref={blogFormRef}>
       <BlogForm
-        blogs={blogs}
-        setBlogs={setBlogs}
-        setNotificationMessage={setNotificationMessage}
-        toggleVisibility={() => blogFormRef.current.toggleVisibility()}
+        title={title}
+        setTitle={setTitle}
+        author={author}
+        setAuthor={setAuthor}
+        url={url}
+        setUrl={setUrl}
+        createBlog={createBlog}
       />
     </Togglable>
   )
