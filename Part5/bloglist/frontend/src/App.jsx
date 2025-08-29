@@ -94,7 +94,7 @@ const App = () => {
             <h2>blogs</h2>
 
             <div>
-              {user.name} logged in
+              <span>{user.name} logged in</span>
               <button onClick={logOut}>Log Out</button>
             </div>
 

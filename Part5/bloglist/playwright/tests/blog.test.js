@@ -1,7 +1,17 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
+const { loginWith } = require('./helper')
 
 describe('Blog app', () => {
-    beforeEach(async ({ page }) => {
+    beforeEach(async ({ page, request }) => {
+        await request.post('/api/testing/reset')
+        await request.post('/api/users', {
+            data: {
+                name: 'José',
+                username: 'Aperta',
+                password: '123456'
+            }
+        })
+
         await page.goto('/')
     })
 
@@ -10,5 +20,20 @@ describe('Blog app', () => {
         await expect(page.getByTestId('username')).toBeVisible()
         await expect(page.getByText('password')).toBeVisible()
         await expect(page.getByTestId('password')).toBeVisible()
+    })
+
+    test('You can log in', async ({ page }) => {
+        await loginWith(page, 'Aperta', '123456')
+
+        await expect(page.getByText('José logged in')).toBeVisible()
+    })
+
+    test('Login can fail', async ({ page }) => {
+        await loginWith(page, 'Aperta', 'wrong')
+
+        const notificationDiv = await page.locator('.notification')
+        await expect(notificationDiv).toContainText('Wrong username or password')
+        await expect(notificationDiv).toHaveCSS('border-style', 'solid')
+        await expect(notificationDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
     })
 })
