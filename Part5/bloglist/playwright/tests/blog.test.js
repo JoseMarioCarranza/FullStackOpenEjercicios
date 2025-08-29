@@ -22,12 +22,6 @@ describe('Blog app', () => {
         await expect(page.getByTestId('password')).toBeVisible()
     })
 
-    test('You can log in', async ({ page }) => {
-        await loginWith(page, 'Aperta', '123456')
-
-        await expect(page.getByText('José logged in')).toBeVisible()
-    })
-
     test('Login can fail', async ({ page }) => {
         await loginWith(page, 'Aperta', 'wrong')
 
@@ -35,5 +29,27 @@ describe('Blog app', () => {
         await expect(notificationDiv).toContainText('Wrong username or password')
         await expect(notificationDiv).toHaveCSS('border-style', 'solid')
         await expect(notificationDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
+    })
+
+    describe('When you are logged in', () => {
+        beforeEach(async ({ page }) => {
+            await loginWith(page, 'Aperta', '123456')
+        })
+
+        test('You can log in', async ({ page }) => {
+            await expect(page.getByText('José logged in')).toBeVisible()
+        })
+
+        test('You can post a new blog', async ({ page }) => {
+            await page.getByRole('button', { name: 'New blog' }).click()
+            await page.locator('input[name="Title"]').fill('title')
+            await page.locator('input[name="Author"]').fill('author')
+            await page.locator('input[name="Url"]').fill('url')
+            await page.getByRole('button', { name: 'create' }).click()
+
+            await expect(page.getByText('a new blog title by author')).toBeVisible()
+
+            await expect(page.getByText('title author', { exact: true })).toBeVisible()
+        })
     })
 })

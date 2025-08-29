@@ -47,7 +47,7 @@ const Blog = ({ blog, blogs, setBlogs, user, like }) => {
   return (
     <div style={blogStyle} className='blog'>
       <div style={hideWhenVisible} className='shortContent'>
-        {blog.title} {blog.author} <button onClick={toggleVisibility}>view</button>
+        <span>{blog.title} {blog.author}</span> <button onClick={toggleVisibility}>view</button>
       </div>
       <div style={showWhenVisible} className='fullContent'>
         <div> {blog.title} {blog.author}<button onClick={toggleVisibility}>hide</button> </div>
