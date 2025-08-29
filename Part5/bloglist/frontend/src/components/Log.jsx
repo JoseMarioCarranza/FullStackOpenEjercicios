@@ -41,6 +41,7 @@ const Log = ({ setUser, setNotificationMessage }) => {
                 <div>
                     username
                     <input
+                        data-testid='username'
                         type="text"
                         value={username}
                         name="Username"
@@ -50,6 +51,7 @@ const Log = ({ setUser, setNotificationMessage }) => {
                 <div>
                     password
                     <input
+                        data-testid='password'
                         type="password"
                         value={password}
                         name="Password"
